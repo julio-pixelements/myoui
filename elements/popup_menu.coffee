@@ -17,12 +17,12 @@ class PopupMenuManager # pumm
 
         basicUI = {
             button: new @context.Button custom_theme
-            slider: new @context.Slider
+            slider: new @context.Slider custom_theme
             switch: new @context.Switch custom_theme
-            textInput: new @context.TextInput
-            vector: new @context.Vector
-            selector: new @context.Selector
-            splitter: new @context.Splitter
+            textInput: new @context.TextInput custom_theme
+            vector: new @context.Vector custom_theme
+            selector: new @context.Selector custom_theme
+            splitter: new @context.Splitter custom_theme
         }
 
         pum_manager = @
