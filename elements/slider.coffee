@@ -5,6 +5,9 @@ option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
 
 icon_component = require './icon.coffee'
 
+roundToLastMultiple = (n,m)->
+    Math.floor(n/m) * m
+    
 class Slider
     context: null
     constructor: (custom_theme={})->

@@ -1,4 +1,4 @@
-{ React, Component, mixins } = require '../common'
+{ React, Component, mixins } = require '../common.coffee'
 { div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
 pre, iframe, br, audio, form, input, label, button, datalist,
 option, optgroup, svg, defs, linearGradient, stop, video, select, option} = React.DOM

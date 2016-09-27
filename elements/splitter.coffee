@@ -10,14 +10,17 @@ class Splitter
         theme = @context.theme
 
         custom_btn_theme = {
-            button:
+            button:[
                 cursor: 'auto'
                 paddingTop: 20
+                custom_theme.splitter? and custom_theme.splitter.title_container
+            ]
             label: -> [
                 theme.splitter.title
                 custom_theme.splitter? and custom_theme.splitter.title
             ]
         }
+        console.log custom_btn_theme
 
         for k,v of custom_theme then custom_btn_theme[k] = v
 
