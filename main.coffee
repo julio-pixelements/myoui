@@ -15,15 +15,32 @@ elements = [
     require('./elements/selector.coffee').Selector
     require('./elements/splitter.coffee').Splitter
     require('./elements/popup_menu.coffee').PopupMenuManager
+    require('./elements/node.coffee').Node
 ]
 
+sockets = [
+    require('./elements/sockets/socket.coffee').Socket
+    require('./elements/sockets/bool.coffee').BoolSocket
+    require('./elements/sockets/basic.coffee').BasicSocket
+    require('./elements/sockets/float.coffee').FloatSocket
+    require('./elements/sockets/int.coffee').IntSocket
+    require('./elements/sockets/string.coffee').StringSocket
+    require('./elements/sockets/vector.coffee').VectorSocket
+    require('./elements/sockets/collection.coffee').CollectionSocket
+]
 class MyoUI
+    sockets: {}
     constructor: (@theme)->
         # classes customization with common context.
         for cls in elements
             new_class = class extends cls
             new_class::context = @
             @[cls.name] = new_class
+
+        for cls in sockets
+            new_class = class extends cls
+            new_class::context = @
+            @sockets[cls.name] = new_class
 
         # TODO: find a better way to do this
         required_css = '''
