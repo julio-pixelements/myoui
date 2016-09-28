@@ -55,6 +55,7 @@ class Vector
                         step: @props.step
                         unit: @props.unit
                         flip: @props.flip
+                        icon: @props.componentsIcons?[i]
                         allowManualEdit: @props.allowManualEdit
                         hideValue: @props.hideValue
                         movementAccuracy: @props.movementAccuracy
@@ -101,7 +102,11 @@ class Vector
                     label = div
                         key: @props.id + '.label'
                         className: 'label'
-                        style: [theme.label(), @props.labelStyle]
+                        style: [
+                            mixins.noSelect
+                            theme.label theme.slider.label.maxWidth
+                            custom_theme.label? and custom_theme.label theme.slider.label.maxWidth
+                            ]
                         @props.label
 
                     icon = @props.icon
@@ -110,7 +115,10 @@ class Vector
                         icon = iconComponent
                             src: icon
                             key: @props.id + '.icon'
-                            style:[theme.icon, @props.iconStyle]
+                            style:[
+                                theme.icon
+                                custom_theme.icon? and custom_theme.icon
+                                ]
 
                     headerProps =  {
                         # Based on button
@@ -126,8 +134,7 @@ class Vector
                             theme.UIElement
                             # customizable style
                             theme.button
-                            # custom style
-                            @props.headerStyle
+                            custom_theme.button
                             ]
                         }
                     header = div(headerProps, icon, label)
@@ -136,14 +143,11 @@ class Vector
                     className: 'vectorElementsContainer'
                     key: @props.id + '.elements'
                     style: [
-                        # required style
                         if @props.vertical then theme.columnFlex else mixins.rowFlex
                         justifyContent: 'space-around'
                         width: '100%'
-                        # customizable style
                         theme.vector.elementsContainer @props.vertical, @props.labels
-                        # custom style
-                        @props.elementsStyle
+                        custom_theme.vector? and custom_theme.vector.elementsContainer @props.vertical, @props.labels
                     ]
                     # Based on sliders
                     @state.vectorElements
@@ -155,10 +159,8 @@ class Vector
                         # required style
                         mixins.columnFlex
                         width: '100%'
-                        # customizable style
                         theme.UIElementContainer @props.disabled, @props.useHighlight
-                        # custom style
-                        @props.style
+                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight
                     ]
                     header
                     elementsContainer
