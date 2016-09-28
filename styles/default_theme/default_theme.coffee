@@ -31,7 +31,7 @@ e.colors = colors =
     t1: '#5f5f5f'
     light: '#efefef'
     dark: '#838383'
-    yellow: 'FFD000'
+    yellow: '#FFD000'
     green: '#BCE346'
     blue: '#00BEFF'
     red: '#f16b5c'
