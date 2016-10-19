@@ -11,11 +11,12 @@ The theme rules are defined in myoui.Theme and the style mixins are defined in m
 ## Usage
 
 You can see the details of the usage here:
-* [[Installation|https://github.com/myou-engine/myoui/wiki/Installation]]
-* [[Initialization|https://github.com/myou-engine/myoui/wiki/Initialization]]
-* [[Adding custom CSS|https://github.com/myou-engine/myoui/wiki/Adding-custom-CSS]]
-* [[Rendering MyoUI components|]]
-* [[Data models reference|]]
+
+* [Installation] (https://github.com/myou-engine/myoui/wiki/Installation)
+* [Initialization](https://github.com/myou-engine/myoui/wiki/Initialization)
+* [Adding custom CSS](https://github.com/myou-engine/myoui/wiki/Adding-custom-CSS)
+* Rendering MyoUI components
+* Data models reference
 
 This is a UML diagram where you can see how to use MyoUI in you project.
 
