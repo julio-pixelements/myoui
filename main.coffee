@@ -1,6 +1,6 @@
 { React, ReactDOM, Radium, Component, mixins } = require './common.coffee'
 
-{Theme} = require './styles/theme.coffee'
+{Theme} = require './styles/default_theme/default_theme.coffee'
 
 # utils
 react_utils = {Radium, React, ReactDOM, Component}
@@ -30,7 +30,7 @@ sockets = [
 ]
 class MyoUI
     sockets: {}
-    constructor: (@theme)->
+    constructor: (@theme=new Theme)->
         # classes customization with common context.
         for cls in elements
             new_class = class extends cls
