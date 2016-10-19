@@ -4,9 +4,9 @@ MyoUI is a __basic UI elements__ library which you can use it to _make your own 
 
 MyoUI is currently used in [Myou Editor](https://github.com/myou-engine/myou-editor) and it was initially created as a part of it, but we moved MyoUI to an independent repository to use it on any other project.
 
-MyoUI is based on __React__ and you can use this library requiring it in your project. __You don't need to attach any css file__ with the theme rules to your project. The default fonts and css animations can be optionally imported to your project only requiring them inside the code.
+MyoUI is based on __React__ and you can use this library requiring it in your project. __You don't need to attach any css file__ to your project to get it working. The default fonts and css animations can be optionally imported to your project only requiring them inside the code.
 
-The theme rules are defined in myoui.Theme and the style mixins are defined in myoui.mixins. You can use its rules directly in the "style" property in your components. __The default theme can be easily modified, replaced or extended__ by your custom theme using some tools included in the library.
+The theme rules are defined in ```myoui.Theme``` and the style mixins are defined in ```myoui.mixins```. You can use its rules directly in the ```style``` property in your components. __The default theme can be easily modified, replaced or extended__ by your custom theme using some tools included in the library.
 
 ## Usage
 
