@@ -15,8 +15,8 @@ You can see the details of the usage here:
 * [Installation] (https://github.com/myou-engine/myoui/wiki/Installation)
 * [Initialization](https://github.com/myou-engine/myoui/wiki/Initialization)
 * [Adding custom CSS](https://github.com/myou-engine/myoui/wiki/Adding-custom-CSS)
-* Rendering MyoUI components
-* Data models reference
+* [Rendering MyoUI elements](https://github.com/myou-engine/myoui/wiki/Rendering-MyoUI-elements)
+* [Data models reference](https://github.com/myou-engine/myoui/wiki/Data-models-reference)
 
 This is a UML diagram where you can see how to use MyoUI in you project.
 
