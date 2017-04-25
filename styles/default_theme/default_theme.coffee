@@ -241,4 +241,4 @@ class Theme
             transformOrigin: "top left"
         ]
 
-module.exports Theme
+module.exports = Theme

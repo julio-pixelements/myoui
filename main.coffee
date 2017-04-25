@@ -1,6 +1,6 @@
 { React, ReactDOM, Radium, Component, mixins } = require './common.coffee'
 
-{Theme} = require './styles/default_theme/default_theme.coffee'
+Theme = require './styles/default_theme/default_theme.coffee'
 
 # utils
 react_utils = {Radium, React, ReactDOM, Component}
