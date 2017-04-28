@@ -36,6 +36,7 @@ class Button
                 # ui_props
                 ui_props = {}
 
+                ui_props.title = @props.title
                 ui_props.key = null
                 ui_props.className = 'myoui simple_button'
                 ui_props.style = [
