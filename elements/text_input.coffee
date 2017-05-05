@@ -23,7 +23,12 @@ class TextInput
                     label = div
                         key: @props.id + '.label'
                         className: 'label'
-                        style: [theme.label(), @props.labelStyle, pointerEvents: 'none']
+                        style: [
+                            theme.label()
+                            custom_theme.label()
+                            @props.labelStyle
+                            pointerEvents: 'none'
+                        ]
                         @props.label
 
                 icon = @props.icon
@@ -32,7 +37,7 @@ class TextInput
                     icon = icon_component
                         src: icon
                         key: @props.id + '.icon'
-                        style:[theme.icon, custom_theme.icon]
+                        style:[theme.icon, custom_theme.icon, @props.iconStyle]
 
                 text_input = input
                     key: @props.id + '.input'
@@ -40,6 +45,7 @@ class TextInput
                     style: [
                         theme.label()
                         theme.textInput
+                        custom_theme.label()
                         custom_theme.textInput
                         margin: '0px 0px 0px 10px'
                     ]
@@ -69,8 +75,9 @@ class TextInput
                             event.target.blur()
                             @setState {value: @props.read()}
 
-                label_and_input = div
-                    key: @props.id + '.label_and_input'
+                element_body = div
+                    key: @props.id + '.element_body'
+                    className: 'element_body'
                     style:[
                         width: '100%'
                         mixins.columnFlex
@@ -79,8 +86,9 @@ class TextInput
                     label, text_input
 
                 props_ui =  {
+                    title: @props.title
                     key: @props.id
-                    className: 'text_input_container'
+                    className: 'myoui text_input_container'
                     style:[
                         mixins.rowFlex
                         alignItems: 'center'
@@ -99,9 +107,9 @@ class TextInput
                     props_ui[k] = v
 
                 if @props.flip
-                    div props_ui, [label_and_input, icon].concat @props.children
+                    div props_ui, [element_body, icon].concat @props.children
                 else
-                    div props_ui, [icon, label_and_input].concat @props.children
+                    div props_ui, [icon, element_body].concat @props.children
 
 module.exports = {TextInput}
 ###

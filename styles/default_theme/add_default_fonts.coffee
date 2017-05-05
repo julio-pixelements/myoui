@@ -17,7 +17,7 @@ font_faces = font_faces or [
 
 # setting Roboto font-family as global myoui style
 global_font_family = '''
-    .myoui * {
+    .myoui {
         font-family: 'Roboto', 'sans-serif';
       }
     '''
