@@ -80,10 +80,10 @@ class Selector
                         mixins.noSelect
                         # cursor: 'pointer'
                         theme.UIElement
-                        theme.UIElementContainer @props.disabled, @props.useHighlight
+                        theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
                         theme.button
                         custom_theme.UIElement
-                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight
+                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight, @props.forceHighlight
                         custom_theme.button
                         ]
                     }

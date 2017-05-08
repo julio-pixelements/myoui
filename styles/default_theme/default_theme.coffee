@@ -81,13 +81,19 @@ class Theme
             background: 'transparent'
         ]
 
-        @UIElementContainer = (disabled, useHighlight)-> [
+        @UIElementContainer = (disabled, useHighlight, forceHighlight)-> [
             if useHighlight
                 ':hover': [
                     mixins.boxShadow shadows.smallSoft
                     background: 'white'
-                    color: 'black !important' # it's not working
+                    color: 'black' # it's not working
                     ]
+            if forceHighlight
+                [
+                    mixins.boxShadow shadows.smallSoft
+                    background: 'white'
+                    color: 'black' # it's not working
+                ]
             mixins.transition '250ms', 'background shadow width'
             if disabled
                 opacity: 0.5
@@ -110,7 +116,8 @@ class Theme
             borderRadius: radius.r1
             background: mixins.chroma(colors.light).darken(0.2)
             borderLeft: 'none' # to disable default style
-            mixins.border3d 0.1, "1px", true
+            mixins.border3d 0.1, '1px', true
+            outline: 'none'
         ]
 
         @button = {}

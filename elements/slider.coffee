@@ -7,7 +7,7 @@ icon_component = require './icon.coffee'
 
 roundToLastMultiple = (n,m)->
     Math.floor(n/m) * m
-    
+
 class Slider
     context: null
     constructor: (custom_theme={})->
@@ -368,8 +368,8 @@ class Slider
                         minWidth: 100
                         minHeight: 30
                         position: 'relative'
-                        theme.UIElementContainer @props.disabled, @props.useHighlight
-                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight
+                        theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
+                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight, @props.forceHighlight
                         ]
 
                     slider

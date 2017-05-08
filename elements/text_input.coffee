@@ -40,6 +40,10 @@ class TextInput
                         style:[theme.icon, custom_theme.icon, @props.iconStyle]
 
                 text_input = input
+                    autoFocus: @props.autoFocus
+                    onFocus: (event)->
+                        event.target.select()
+
                     key: @props.id + '.input'
                     className: 'text_input'
                     style: [
@@ -96,7 +100,7 @@ class TextInput
                         width: '100%'
                         mixins.noSelect
                         theme.UIElement
-                        theme.UIElementContainer @props.disabled, @props.useHighlight
+                        theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
                         theme.button
                         custom_theme.button
                         ]

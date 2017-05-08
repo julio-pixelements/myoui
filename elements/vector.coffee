@@ -159,8 +159,8 @@ class Vector
                         # required style
                         mixins.columnFlex
                         width: '100%'
-                        theme.UIElementContainer @props.disabled, @props.useHighlight
-                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight
+                        theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
+                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight, @props.forceHighlight
                     ]
                     header
                     elementsContainer
