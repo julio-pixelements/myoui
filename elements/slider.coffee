@@ -18,6 +18,7 @@ class Slider
                 allowManualEdit: true
                 movementAccuracy: 1
                 custom_theme: null
+                formatValue: null
 
             getInitialState: ->
                 value: null
@@ -65,6 +66,7 @@ class Slider
                 preunit = ''
                 postunit = ''
                 unit = @props.unit
+
                 if unit
                     vindex = unit.indexOf '<value>'
                     if vindex > -1
@@ -80,17 +82,22 @@ class Slider
 
                     if @state.editing
                         value_content = @state.editingValue
+
                     else
                         v = value
                         if @props.step
                             v = roundToLastMultiple(value, @props.step) + @state.stepOffset
                             v = Math.min(Math.max(v, min),max)
-                        floor_v = Math.floor(v)
-                        if v == floor_v
-                            value_content = floor_v
+                        if @props.formatValue
+                            value_content = @props.formatValue(v)
+
                         else
-                            value_content = v.toFixed(2)
-                        value_content = preunit + value_content + postunit
+                            floor_v = Math.floor(v)
+                            if v == floor_v
+                                value_content = floor_v
+                            else
+                                value_content = v.toFixed(2)
+                            value_content = preunit + value_content + postunit
 
                     value_component = input
                         className: 'myoui slider_value'
@@ -100,6 +107,7 @@ class Slider
 
                         style:[
                             theme.slider.value
+                            custom_theme.value
                             if @state.invalidInput
                                 theme.invalidInput
                                 custom_theme.invalidInput? and custom_theme.invalidInput
