@@ -30,7 +30,8 @@ class Slider
                 stepOffset: 0
 
             componentWillUpdate: ()->
-                @state.value = @props.read?()
+                if not (@state.editing or @state.sliding)
+                    @state.value = @props.read?()
 
             componentWillMount: ->
                 if not @props.read

@@ -14,8 +14,13 @@ class TextInput
                 labelStyle: []
 
             componentWillUpdate: ->
-                @state.value = @props.read?()
-                
+                if not @state.editing
+                    @state.value = @props.read?()
+
+            getInitialState: ->
+                value: ''
+                editing: false
+
             componentWillMount: ->
                 @setState {value: @props.read()}
 
@@ -63,11 +68,11 @@ class TextInput
                         wrong_input = @props.validate?(v)
                         if not wrong_input
                             @props.onChange?(v)
-                        @setState {value:v, wrongInput:wrong_input}
+                        @setState {value:v, wrongInput:wrong_input, editing:true}
 
                     # dimiss
                     onBlur: (event) =>
-                        @setState {value: @props.read()}
+                        @setState {value: @props.read(), editing:false}
 
                     onKeyDown: (event)=>
                         v = event.target.value
@@ -76,11 +81,12 @@ class TextInput
                                 return
                             # write value
                             @props.onSubmit?(v)
+                            @setState {editing:false}
                             event.target.blur()
 
                         else if event.keyCode == 27 # ESC (dimiss)
                             event.target.blur()
-                            @setState {value: @props.read()}
+                            @setState {value: @props.read(), editing:false}
 
                 element_body = div
                     key: @props.id + '.element_body'
