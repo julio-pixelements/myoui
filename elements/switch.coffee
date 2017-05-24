@@ -21,11 +21,14 @@ class Switch
                 props.states = 2
                 return props
 
+            componentWillUpdate: ()->
+                @state.state = @props.read?() % @props.states
+
             render: ->
                 custom_theme = @props.custom_theme or custom_theme
                 # calc next state
                 states = @props.states
-                state = @props.read?() % states
+                state = @state.state or 0
 
                 {radius, buttonWidth, containerBaseWidth, borderWidth, containerHeight} = @props
 

@@ -29,6 +29,9 @@ class Slider
                 invalidInput: false
                 stepOffset: 0
 
+            componentWillUpdate: ()->
+                @state.value = @props.read?()
+
             componentWillMount: ->
                 if not @props.read
                     throw 'No "read" property defined in the slider config.'

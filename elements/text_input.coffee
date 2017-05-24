@@ -13,6 +13,9 @@ class TextInput
             getDefaultProps: ->
                 labelStyle: []
 
+            componentWillUpdate: ->
+                @state.value = @props.read?()
+                
             componentWillMount: ->
                 @setState {value: @props.read()}
 
