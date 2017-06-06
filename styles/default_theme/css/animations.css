@@ -25,29 +25,29 @@
 }
 
 @-moz-keyframes beat {
-	0% {-moz-transform: scale(0.9)}
-	50% {-moz-transform: scale(1)}
-	100% {-moz-transform: scale(0.9)}
+	0% {-moz-transform: scale(1)}
+	50% {-moz-transform: scale(0.9)}
+	100% {-moz-transform: scale(1)}
 }
 @-webkit-keyframes beat {
-	0% {-webkit-transform: scale(0.9)}
-	50% {-webkit-transform: scale(1)}
-	100% {-webkit-transform: scale(0.9)}
+	0% {-webkit-transform: scale(1)}
+	50% {-webkit-transform: scale(0.9)}
+	100% {-webkit-transform: scale(1)}
 }
 @-o-keyframes beat {
-	0% {-o-transform: scale(0.9)}
-	50% {-o-transform: scale(1)}
-	100% {-o-transform: scale(0.9)}
+	0% {-o-transform: scale(1)}
+	50% {-o-transform: scale(0.9)}
+	100% {-o-transform: scale(1)}
 }
 @-ms-keyframes beat {
-	0% {-ms-transform: scale(0.9)}
-	50% {-ms-transform: scale(1)}
-	100% {-ms-transform: scale(0.9)}
+	0% {-ms-transform: scale(1)}
+	50% {-ms-transform: scale(0.9)}
+	100% {-ms-transform: scale(1)}
 }
 @keyframes beat {
-	0% {transform: scale(0.9)}
-	50% {transform: scale(1)}
-	100% {transform: scale(0.9)}
+	0% {transform: scale(1)}
+	50% {transform: scale(0.9)}
+	100% {transform: scale(1)}
 }
 
 @-moz-keyframes unhide {

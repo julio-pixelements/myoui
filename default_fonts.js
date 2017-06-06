@@ -1,7 +1,1 @@
-if(process.browser){ //Webpack code
-    require('./noco-loader!./styles/default_theme/add_default_fonts.coffee');
-}else { //Electron code
-    var req = eval('require');
-    req('coffee-script/register');
-    req('./styles/default_theme/add_default_fonts.coffee');
-}
+module.exports = require('./build/default_fonts.js')

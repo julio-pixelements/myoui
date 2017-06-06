@@ -1,0 +1,23 @@
+/node_modules/
+/_cache/*
+
+#webpack builds
+
+#temporal files
+*~
+.directory
+*.orig
+*.rej
+__pycache__
+
+#log files
+npm-debug.log
+
+#local files
+local/
+*.local.*
+Thumbs.db
+*.local
+
+#source files
+*.coffee

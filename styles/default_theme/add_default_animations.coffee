@@ -2,7 +2,7 @@
 css_utils = require '../css_utils.coffee'
 
 if process.browser # browser code
-    css_animations = require 'raw!./css/animations.css'
+    css_animations = require 'raw-loader!./css/animations.css'
 
 else # electron code
     fs = require 'fs'

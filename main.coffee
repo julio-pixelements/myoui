@@ -35,7 +35,7 @@ class MyoUI
         '''
         # TODO: do not use reactSelect
         if process.browser # browser code
-            reactSelect = require 'raw!./styles/default_theme/css/react-select.css'
+            reactSelect = require 'raw-loader!./styles/default_theme/css/react-select.css'
         else # electron code
             fs = require 'fs'
             dirname =  __dirname.replace(/\\/g, '/')

@@ -106,9 +106,12 @@ class Theme
         @icon =
             margin: "#{-spacing}px #{spacing/2}px #{-spacing}px #{-spacing/2}px"
 
-        @label = (maxWidth=200)->
+        @label = (maxWidth=200, textAlign='center')->
             maxWidth: maxWidth
             margin: "0px #{spacing}px"
+            whiteSpace: 'pre-wrap'
+            textAlign: textAlign
+
 
         @textInput = [
             color: colors.t1

@@ -1,11 +1,10 @@
 {
   "name": "myoui",
-  "version": "0.0.9",
+  "version": "0.0.6",
   "description": "MyoUI is a basic UI elements library.",
-  "main": "./build/myoui.js",
+  "main": "./main.js",
   "scripts": {
-    "build": "webpack",
-    "prepublish": "node ./node_modules/webpack/bin/webpack.js"
+    "build": "webpack"
   },
   "dependencies": {
     "coffee-loader": "^0.7.2",
@@ -23,7 +22,7 @@
   },
   "devDependencies": {
     "source-map-loader": "^0.1.5",
-    "webpack": "^2.6.1"
+    "webpack": "^1.12.11"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "myoui",
-  "version": "0.0.9",
+  "version": "0.0.7",
   "description": "MyoUI is a basic UI elements library.",
   "main": "./build/myoui.js",
   "scripts": {
