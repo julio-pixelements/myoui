@@ -29,12 +29,15 @@ class Theme
         @colors = colors =
             t1: '#5f5f5f'
             light: '#efefef'
+            gray: '#d5d5d5'
             dark: '#838383'
-            yellow: '#FFD000'
-            green: '#BCE346'
-            blue: '#00BEFF'
-            red: '#f16b5c'
+            very_dark: '#3f3f3f'
             purple: '#c188cf'
+            blue: '#94bdec'
+            orange: '#db8851'
+            green: '#b1c151'
+            yellow: '#eec151'
+            red: '#f16b5c'
 
         @socketColors = socketColors =
             basic: 'white'
