@@ -6,25 +6,23 @@ Theme = require './styles/default_theme/default_theme.coffee'
 react_utils = {Radium, React, ReactDOM, Component}
 css_utils = require './styles/css_utils.coffee'
 
-elements = [
-    require('./elements/button.coffee').Button
-    require('./elements/switch.coffee').Switch
-    require('./elements/slider.coffee').Slider
-    require('./elements/vector.coffee').Vector
-    require('./elements/text_input.coffee').TextInput
-    require('./elements/selector.coffee').Selector
-    require('./elements/splitter.coffee').Splitter
-    require('./elements/popup_menu.coffee').PopupMenuManager
-]
+elements = {
+    Button: require('./elements/button.coffee').Button
+    Switch: require('./elements/switch.coffee').Switch
+    Slider: require('./elements/slider.coffee').Slider
+    Vector: require('./elements/vector.coffee').Vector
+    TextInput: require('./elements/text_input.coffee').TextInput
+    Selector: require('./elements/selector.coffee').Selector
+    Splitter: require('./elements/splitter.coffee').Splitter
+    PopupMenuManager: require('./elements/popup_menu.coffee').PopupMenuManager
+}
 
 class MyoUI
     constructor: (@theme=new Theme)->
 
         # classes customization with common context.
-        for cls in elements
-            new_class = class extends cls
-            new_class::context = @
-            @[cls.name] = new_class
+        for name,cls of elements
+            @[name] = cls.bind cls, @
 
         # TODO: find a better way to do this
         required_css = '''

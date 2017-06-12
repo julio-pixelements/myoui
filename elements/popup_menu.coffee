@@ -4,8 +4,7 @@ pre, iframe, br, audio, form, input, label, button, datalist,
 option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
 
 class PopupMenuManager # pumm
-    context: null
-    constructor: (custom_theme={}, zIndex=1000)->
+    constructor: (@context, custom_theme={}, zIndex=1000)->
         # allow/avoid parent overflow.
         pums = @_pums = {}
         active = @_active = []

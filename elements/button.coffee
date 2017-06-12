@@ -6,8 +6,7 @@ option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
 icon_component = require './icon.coffee'
 
 class Button
-    context: null
-    constructor: (custom_theme={})->
+    constructor: (@context, custom_theme={})->
         theme = @context.theme
         self = @ # to be used in the component
         @ui = Component

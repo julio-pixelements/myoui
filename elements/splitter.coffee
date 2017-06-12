@@ -4,8 +4,7 @@ pre, iframe, br, audio, form, input, label, button, datalist,
 option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
 
 class Splitter
-    context: null
-    constructor: (custom_theme={}) ->
+    constructor: (@context, custom_theme={}) ->
         @custom_theme = custom_theme
         theme = @context.theme
 

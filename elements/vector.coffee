@@ -7,8 +7,7 @@ iconComponent = require './icon.coffee'
 dimensionNames = 'xyzwvutsrqponmlkjihgfedcba'
 
 class Vector
-    context: null
-    constructor: (custom_theme={}) ->
+    constructor: (@context, custom_theme={}) ->
         theme = @context.theme
         slider = new @context.Slider
 

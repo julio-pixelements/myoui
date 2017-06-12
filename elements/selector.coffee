@@ -8,8 +8,7 @@ Radium = require 'radium'
 Select = React.createFactory Radium require 'react-select'
 
 class Selector
-    context: null
-    constructor: (custom_theme={})->
+    constructor: (@context, custom_theme={})->
         theme = @context.theme
         @ui = Component
             getDefaultProps: ->
@@ -17,7 +16,7 @@ class Selector
 
             componentWillUpdate: ()->
                 @state.value = @props.read?()
-                
+
             componentWillMount: ->
                  @setState {value: @props.read()}
 

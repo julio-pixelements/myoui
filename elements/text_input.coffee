@@ -6,8 +6,7 @@ option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
 icon_component = require './icon'
 
 class TextInput
-    context: null
-    constructor: (custom_theme={}) ->
+    constructor: (@context, custom_theme={}) ->
         theme = @context.theme
         @ui = Component
             getDefaultProps: ->
