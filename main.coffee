@@ -30,6 +30,10 @@ class MyoUI
             box-sizing: border-box;
             margin: 0;
           }
+        .myoui {
+            box-sizing: border-box;
+            margin: 0;
+          }
         '''
         # TODO: do not use reactSelect
         if process.browser # browser code
