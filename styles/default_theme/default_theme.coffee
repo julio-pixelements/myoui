@@ -87,13 +87,13 @@ class Theme
         @UIElementContainer = (disabled, useHighlight, forceHighlight)-> [
             if useHighlight
                 ':hover': [
-                    mixins.boxShadow shadows.smallSoft
+                    boxShadow: shadows.smallSoft
                     background: 'white'
                     color: 'black' # it's not working
                     ]
             if forceHighlight
                 [
-                    mixins.boxShadow shadows.smallSoft
+                    boxShadow: shadows.smallSoft
                     background: 'white'
                     color: 'black' # it's not working
                 ]
@@ -147,7 +147,7 @@ class Theme
                 minWidth: "4px"
                 background: color
                 borderRadius: if flip then "#{radius.r2}px 0 0 #{radius.r2}px" else "0 #{radius.r2}px #{radius.r2}px 0"
-                mixins.boxShadow shadows.smallSoft
+                boxShadow: shadows.smallSoft
                 mixins.border3d 0.1, '1px'
                 if allowTransitions then mixins.transition '0.1s', 'width'
                 transformOrigin: "left"
@@ -170,14 +170,14 @@ class Theme
             base: (borderWidth, switchColor)-> [
                 background: switchColor
                 mixins.border3d 0.2, "#{borderWidth}px"
-                mixins.boxShadow shadows.small
+                boxShadow: shadows.small
                 mixins.transition '0.25s', 'width color'
                 ]
             button: (borderWidth)-> [
                 background: colors.light
                 mixins.border3d 0.2, "#{borderWidth}px"
-                mixins.boxShadow shadows.small
-                mixins.transform "scale(0.8)"
+                boxShadow: shadows.small
+                transform: "scale(0.8)"
                 mixins.transition '0.25s', 'transform'
                 # animation 'unhide_zoom', '1s'
             ]
@@ -246,7 +246,7 @@ class Theme
         }
 
         @popupMenu = (enabled) -> [
-            mixins.boxShadow shadows.soft
+            boxShadow: shadows.soft
             # if enabled then animation('unhide_zoom', '250ms') else animation('hide_zoom', '250ms')
             borderRadius: radius.r2
             background: colors.light

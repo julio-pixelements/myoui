@@ -102,7 +102,7 @@ class Vector
                         key: @props.id + '.label'
                         className: 'label'
                         style: [
-                            mixins.noSelect
+                            userSelect: 'none'
                             theme.label theme.slider.label.maxWidth
                             custom_theme.label? and custom_theme.label theme.slider.label.maxWidth
                             ]
@@ -129,7 +129,7 @@ class Vector
                             alignItems: 'center'
                             justifyContent: if icon and label then 'flex-start' else 'center'
                             width: '100%'
-                            mixins.noSelect
+                            userSelect: 'none'
                             theme.UIElement
                             # customizable style
                             theme.button

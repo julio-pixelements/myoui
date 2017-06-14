@@ -166,7 +166,7 @@ class Slider
                         key: @props.id + '.label'
                         className: 'myoui label'
                         style: [
-                            mixins.noSelect
+                            userSelect: 'none'
                             theme.label theme.slider.label.maxWidth
                             custom_theme.label? and custom_theme.label theme.slider.label.maxWidth
                             ]
@@ -283,7 +283,7 @@ class Slider
                         cursor: 'w-resize'
                         zIndex: 1
                         mixins.fullWindow
-                        mixins.noSelect
+                        userSelect: 'none'
                     ]
 
                 props = {

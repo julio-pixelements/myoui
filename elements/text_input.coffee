@@ -106,7 +106,7 @@ class TextInput
                         alignItems: 'center'
                         justifyContent: if icon and label then 'space-between' else 'center'
                         width: '100%'
-                        mixins.noSelect
+                        userSelect: 'none'
                         theme.UIElement
                         theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
                         theme.button

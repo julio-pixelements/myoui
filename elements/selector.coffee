@@ -79,7 +79,7 @@ class Selector
                         alignItems: 'center'
                         justifyContent: if icon and label then 'space-between' else 'center'
                         width: '100%'
-                        mixins.noSelect
+                        userSelect: 'none'
                         # cursor: 'pointer'
                         theme.UIElement
                         theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight

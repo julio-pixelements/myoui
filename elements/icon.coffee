@@ -10,6 +10,6 @@ module.exports = Component
             src: @props.src
             style: [
                 width: 40
-                mixins.noSelect
+                userSelect: 'none'
                 @props.style
             ]
