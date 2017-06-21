@@ -6,23 +6,30 @@ class Theme
     constructor: ->
         @spacing = spacing = 10
 
+
         @fontStyles = fontStyles =
             p:
+                fontFamily: "'Roboto', 'sans-serif'"
                 fontSize: 15
                 fontWeight: 400
             pBold:
+                fontFamily: "'Roboto', 'sans-serif'"
                 fontSize: 15
                 fontWeight: 600
             titleLight:
+                fontFamily: "'Roboto', 'sans-serif'"
                 fontSize: 60
                 fontWeight: 300
             titleLightM:
+                fontFamily: "'Roboto', 'sans-serif'"
                 fontSize:30
                 fontWeight: 300
             titleLightS:
+                fontFamily: "'Roboto', 'sans-serif'"
                 fontSize: 20
                 fontWeight: 300
             titleLightXS:
+                fontFamily: "'Roboto', 'sans-serif'"
                 fontSize: 15
                 fontWeight: 300
 
