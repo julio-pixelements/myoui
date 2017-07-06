@@ -8,7 +8,7 @@ e.colorInterpolation = colorInterpolation = (a,b,f=0) ->
 
 bgImg = e.bgImg = (img_url, color='transparent', position='center', size='contain', repeat=false)->
     repeat = if repeat then '' else 'no-repeat'
-    "#{color} url(#{img_url}) #{position}  / #{size} #{repeat}"
+    "url(#{img_url}) #{position} / #{size} #{repeat} #{color}"
 
 border3d = e.border3d = (opacity=1, width='1px', inset=false) ->
     if inset

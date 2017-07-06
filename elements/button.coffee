@@ -53,7 +53,9 @@ class Button
                     userSelect: 'none'
                     cursor: 'pointer'
                     theme.UIElement
+                    custom_theme.UIElement
                     theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
+                    custom_theme.UIElementContainer? @props.disabled, @props.useHighlight, @props.forceHighlight
                     theme.button
                     custom_theme.button
                     ]
