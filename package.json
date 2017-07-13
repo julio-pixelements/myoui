@@ -1,6 +1,6 @@
 {
   "name": "myoui",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "MyoUI is a basic UI elements library.",
   "main": "./build/myoui.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "file-loader": "^0.8.5",
     "imports": "^1.0.0",
     "json-loader": "^0.5.4",
-    "radium": "^0.18.0",
+    "radium": "^0.18.4",
     "raw-loader": "^0.5.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
