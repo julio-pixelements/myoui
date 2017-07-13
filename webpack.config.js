@@ -51,7 +51,6 @@ var config = {
     resolve: {
         extensions: [".webpack.js", ".web.js", ".js", ".coffee", ".json"],
     },
-    externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
 }
 
 module.exports = (env) => {
