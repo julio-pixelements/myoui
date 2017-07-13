@@ -4,7 +4,7 @@ var webpack = require('webpack');
 var fs = require('fs');
 var license = fs.readFileSync('./LICENSE', 'utf8').toString()
 
-module.exports = {
+var config = {
     output: {
         path: __dirname + '/build',
         filename: '[name].js',
@@ -26,7 +26,6 @@ module.exports = {
                 test: /\.coffee$/,
                 loaders: [
                     'coffee-loader',
-                    'source-map-loader',
                 ]
             },
             {
@@ -42,7 +41,6 @@ module.exports = {
             {test: /\.styl$/, loader: 'raw!stylus-loader'},
         ]
     },
-    devtool: 'inline-source-map',
     plugins: [
         new webpack.BannerPlugin({banner:license, raw:false}),
         new webpack.BannerPlugin({banner:'"use strict";', raw:true}),
@@ -51,4 +49,29 @@ module.exports = {
     resolve: {
         extensions: [".webpack.js", ".web.js", ".js", ".coffee", ".json"],
     },
+}
+
+module.exports = (env) => {
+    if(env && (env.prod)){
+        config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+            minimize: true,
+            mangle: true,
+            compress: {
+        		sequences: true,
+        		dead_code: true,
+        		conditionals: true,
+        		booleans: true,
+        		unused: true,
+        		if_return: true,
+        		join_vars: true,
+        		drop_console: true
+                }
+            })
+        )
+    }else{
+        config.module.rules[0].loaders.unshift('source-map-loader');
+        config.devtool = 'cheap-module-eval-source-map';
+    }
+    return config
+
 }
