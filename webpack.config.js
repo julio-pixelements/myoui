@@ -1,5 +1,7 @@
 'use strict'
 var webpack = require('webpack');
+var nodeExternals = require('webpack-node-externals');
+
 // generating banner
 var fs = require('fs');
 var license = fs.readFileSync('./LICENSE', 'utf8').toString()
@@ -49,26 +51,11 @@ var config = {
     resolve: {
         extensions: [".webpack.js", ".web.js", ".js", ".coffee", ".json"],
     },
+    externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
 }
 
 module.exports = (env) => {
-    if(env && (env.prod)){
-        config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            mangle: true,
-            compress: {
-        		sequences: true,
-        		dead_code: true,
-        		conditionals: true,
-        		booleans: true,
-        		unused: true,
-        		if_return: true,
-        		join_vars: true,
-        		drop_console: true
-                }
-            })
-        )
-    }else{
+    if(!(env && (env.prod))){
         config.module.rules[0].loaders.unshift('source-map-loader');
         config.devtool = 'cheap-module-eval-source-map';
     }
