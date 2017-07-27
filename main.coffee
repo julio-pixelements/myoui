@@ -43,6 +43,8 @@ class MyoUI
             dirname =  __dirname.replace(/\\/g, '/')
             reactSelect = fs.readFileSync dirname + '/styles/default_theme/css/react-select.css', 'utf8'
         # Adding css to the document
-        css_utils.add_css required_css + reactSelect
-
+        if document?
+            css_utils.add_css required_css + reactSelect
+        else
+            console.warn 'Required css files will not be used because you are executing MyoUI out of a browser.'
 module.exports = {MyoUI, mixins, Theme, css_utils, react_utils}
