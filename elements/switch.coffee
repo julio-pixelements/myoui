@@ -1,99 +1,99 @@
-{ React, Component, mixins } = require '../common.coffee'
-{ div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
-pre, iframe, br, audio, form, input, label, button, datalist,
-option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
+{ React, mixins } = require '../common.coffee'
+e = React.createElement
+class Switch extends React.Component
+    @defaultProps = {states: 2}
+    theme: {}
+    constructor: (myoui, props={}) ->
+        super props
+        props = @switch_props = {myoui.theme.switch.props..., props...}
 
-class Switch
-    constructor: (@context, custom_theme={}) ->
-        @custom_theme = custom_theme
-        theme = @context.theme
+        @state =
+            state: 0
 
-        custom_btn_theme = {button: justifyContent: 'space-between'}
-        for k,v of custom_theme then custom_btn_theme[k] = v
+        @myoui = myoui
+        theme = @theme = {@myoui.theme..., @theme..., props.theme...}
 
-        btn = new @context.Button custom_btn_theme
+        @ui_props = ui_props = {
+            button:
+                justifyContent: 'space-between'
+            label: @props.label
+            icon: @props.icon
+            theme.switch.props...
+        }
 
-        @ui = Component
-            getDefaultProps: ->
-                props = theme.switch.props
-                props.useHighlight = false
-                props.states = 2
-                return props
+        # Adding events
+        for k,v of @props when /^on[A-Z]/.test k
+            ui_props[k] = v
 
-            componentWillUpdate: ()->
-                @state.state = @props.read?() % @props.states
+        ui_props.onMouseUp = (event) =>
+            props.write?(@state.state)
+            props.onMouseUp?(event)
+            @forceUpdate()
 
-            render: ->
-                custom_theme = @props.custom_theme or custom_theme
-                # calc next state
-                states = @props.states
-                state = @state.state or 0
+    componentWillUpdate: ()->
+        @state.state = @props.read?() % @props.states
 
-                {radius, buttonWidth, containerBaseWidth, borderWidth, containerHeight} = @props
+    render: ->
+        theme = @theme
+        props = @switch_props
+        # calc next state
+        states = props.states
 
-                containerWidth = containerBaseWidth + buttonWidth # total width of the container
-                step = containerBaseWidth/(states-1)
+        if not states or states < 2
+            throw 'Invalid number of states: ' + states + '\n The number of states must be 2 or more.'
+        state = @state.state or 0
 
-                switchWidth = (step * state) + buttonWidth
+        {
+            radius=0, buttonWidth=0, containerBaseWidth=0,
+            borderWidth=0, containerHeight=0
+        } = props
 
-                colorFactor = (1/(states-1))*state
-                if typeof(@props.switchColor) == 'function'
-                    switchColor = @props.switchColor colorFactor
-                else
-                    switchColor = @props.switchColor
 
-                switchComponent = div
-                    className: 'myoui switch'
-                    style:[
-                        position: 'relative'
-                        width: containerWidth
-                        height: containerHeight
-                        borderRadius: radius
-                        overflow: 'hidden'
-                        theme.switch.container borderWidth
-                        if custom_theme.switch?
-                            custom_theme.switch.container borderWidth                 ]
-                    div
-                        style: [
-                            position: 'absolute'
-                            width: switchWidth - (borderWidth * 2)
-                            height: containerHeight - (borderWidth * 2)
-                            marginLeft: borderWidth
-                            borderRadius: radius - borderWidth
-                            theme.switch.base borderWidth, switchColor
-                            if custom_theme.switch?
-                                custom_theme.switch.base borderWidth, switchColor
-                        ]
-                        div
-                            style: [
-                                position: 'absolute'
-                                top: -1
-                                right: 0
-                                width: containerHeight - (2 * borderWidth)
-                                height: containerHeight - (2 * borderWidth)
-                                borderRadius: radius
-                                theme.switch.button borderWidth
-                                if custom_theme.switch?
-                                    custom_theme.switch.button borderWidth
-                            ]
+        containerWidth = containerBaseWidth + buttonWidth # total width of the container
 
-                props_ui = {
-                    label: @props.label
-                    icon: @props.icon
+        step = containerBaseWidth/(states-1)
+
+        switchWidth = (step * state) + buttonWidth
+
+        colorFactor = (1/(states-1))*state
+        if typeof(props.switchColor) == 'function'
+            switchColor = props.switchColor colorFactor
+        else
+            switchColor = props.switchColor
+
+        switchComponent = e 'div',
+            className: 'myoui switch'
+            style: {
+                position: 'relative'
+                width: containerWidth
+                height: containerHeight
+                borderRadius: radius
+                overflow: 'hidden'
+                theme.switch.container(borderWidth)...
+            }
+            e 'div',
+                style: {
+                    position: 'absolute'
+                    width: switchWidth - (borderWidth * 2)
+                    height: containerHeight - (borderWidth * 2)
+                    marginLeft: borderWidth
+                    borderRadius: radius - borderWidth
+                    (theme.switch.base borderWidth, switchColor)...
                 }
+                e 'div',
+                    style: {
+                        position: 'absolute'
+                        top: -1
+                        right: 0
+                        width: containerHeight - (2 * borderWidth)
+                        height: containerHeight - (2 * borderWidth)
+                        borderRadius: radius
+                        (theme.switch.button borderWidth)...
+                    }
 
-                # Adding events
-                for k,v of @props when /^on[A-Z]/.test k
-                    props_ui[k] = v
+        e @myoui.Button, @ui_props, switchComponent
 
-                props_ui.onMouseUp = (event) =>
-                    @props.write?(state)
-                    @props.onMouseUp?(event)
-                    @forceUpdate()
-
-                btn.ui props_ui, switchComponent
-
-module.exports = {Switch}
+module.exports = Switch
 
 ###
 visual scheme:

@@ -1,28 +1,30 @@
-{ React, ReactDOM, Radium, Component, mixins } = require './common.coffee'
+{ React, ReactDOM, mixins } = require './common.coffee'
 
 Theme = require './styles/default_theme/default_theme.coffee'
 
 # utils
-react_utils = {Radium, React, ReactDOM, Component}
+react_utils = {React, ReactDOM}
 css_utils = require './styles/css_utils.coffee'
 
-elements = {
-    Button: require('./elements/button.coffee').Button
-    Switch: require('./elements/switch.coffee').Switch
-    Slider: require('./elements/slider.coffee').Slider
-    Vector: require('./elements/vector.coffee').Vector
-    TextInput: require('./elements/text_input.coffee').TextInput
-    Selector: require('./elements/selector.coffee').Selector
-    Splitter: require('./elements/splitter.coffee').Splitter
-    PopupMenuManager: require('./elements/popup_menu.coffee').PopupMenuManager
+elements ={
+    Button: require './elements/button.coffee'
+    Switch: require './elements/switch.coffee'
+    Slider: require './elements/slider.coffee'
+    Vector: require './elements/vector.coffee'
+    TextInput: require './elements/text_input.coffee'
+    Selector: require './elements/selector.coffee'
+    Splitter: require './elements/splitter.coffee'
+    PopupMenuManager: require('./elements/popup_menu.coffee')
 }
 
 class MyoUI
     constructor: (@theme=new Theme)->
-
-        # classes customization with common context.
+        myoui = @
         for name,cls of elements
-            @[name] = cls.bind cls, @
+            @[name] = new_cls = class myoui_component extends cls
+                constructor: (props)->
+                    super myoui, props
+                    @type = name
 
         # TODO: find a better way to do this
         required_css = '''
@@ -47,4 +49,5 @@ class MyoUI
             css_utils.add_css required_css + reactSelect
         else
             console.warn 'Required css files will not be used because you are executing MyoUI out of a browser.'
+
 module.exports = {MyoUI, mixins, Theme, css_utils, react_utils}

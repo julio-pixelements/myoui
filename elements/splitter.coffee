@@ -1,68 +1,57 @@
-{ React, Component, mixins } = require '../common.coffee'
-{ div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
-pre, iframe, br, audio, form, input, label, button, datalist,
-option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
+{ React, mixins } = require '../common.coffee'
+e = React.createElement
 
-class Splitter
-    constructor: (@context, custom_theme={}) ->
-        @custom_theme = custom_theme
-        theme = @context.theme
+class Splitter extends React.Component
+    theme = {}
+    constructor: (@myoui, props={}) ->
+        super props
+        theme = {@myoui.theme..., @theme..., props.theme...}
 
         custom_btn_theme = {
-            button:[
+            button: {
                 cursor: 'auto'
                 paddingTop: 20
-                custom_theme.splitter? and custom_theme.splitter.title_container
-            ]
-            label: -> [
-                theme.splitter.title
-                custom_theme.splitter? and custom_theme.splitter.title
-            ]
+                theme.splitter.title_container...
+            }
+            label: -> theme.splitter.title
         }
-        console.log custom_btn_theme
+
+        theme = @theme = {theme..., custom_btn_theme}
 
         for k,v of custom_theme then custom_btn_theme[k] = v
 
-        btn = new @context.Button custom_btn_theme
+        ui_props = @ui_props =  {
+            key: @props.id
+            className: 'myoui splitter_container'
+            style: {
+                mixins.columnFlex...
+                alignItems: 'center'
+                justifyContent: 'center'
+                width: '100%'
+                theme.splitter.container...
+            }
+        }
 
-        @ui = Component
-            render: ->
-                custom_theme = @props.custom_theme or custom_theme
-                splitter = div
-                    key: @props.id + '.splitter'
-                    className: 'myoui splitter'
-                    style: [
-                        theme.splitter.style,
-                        custom_theme.splitter? and custom_theme.splitter.style
-                    ]
-                    value: @state.value
+        # Adding events
+        for k,v of @props when /^on[A-Z]/.test k
+            ui_props[k] = v
 
-                props_ui =  {
-                    key: @props.id
-                    className: 'myoui splitter_container'
-                    style:[
-                        mixins.columnFlex
-                        alignItems: 'center'
-                        justifyContent: 'center'
-                        width: '100%'
-                        custom_theme.splitter? and custom_theme.splitter.container
-                        ]
-                    }
+    render: ->
+        splitter = e 'div',
+            key: @props.id + '.splitter'
+            className: 'myoui splitter'
+            style: theme.splitter.style
+            value: @state.value
 
-                # Adding events
-                for k,v of @props when /^on[A-Z]/.test k
-                    props_ui[k] = v
+        e 'div', @ui_props, [
+            e @myoui.Button,
+                key: @props.id + '.button'
+                label: @props.label
+                icon: @props.icon
+            , splitter
+            ].concat @props.children
 
-                div props_ui, [
-                    btn.ui
-                        key: @props.id + '.button'
-                        label: @props.label
-                        icon: @props.icon
-
-                    splitter
-                    ].concat @props.children
-
-module.exports = {Splitter}
+module.exports = Splitter
 
 ###
 Visual scheme:

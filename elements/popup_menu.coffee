@@ -1,43 +1,42 @@
-{ React, ReactDOM, Component, mixins } = require '../common.coffee'
-{ div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
-pre, iframe, br, audio, form, input, label, button, datalist,
-option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
+{ React, ReactDOM, mixins } = require '../common.coffee'
+e = React.createElement
 
-class PopupMenuManager # pumm
-    constructor: (@context, custom_theme={}, zIndex=1000)->
+class PopupMenuManager
+    constructor: (@myoui, options={})->
+        {@zIndex=1000000, @useHighlight=true} = options
+
+        @pums = {}
+        @active = []
         # allow/avoid parent overflow.
-        pums = @_pums = {}
-        active = @_active = []
 
-        # it will be overwritten when the component is mounted.
-        # if @update is called before mounting the component. It will throw an error.
+        # It will be overwritten when the component is mounted.
+        # If @update is called before mounting the component.
+        # It will throw an error.
         @update = ->
             throw 'The component is not mounted.'
 
-        basicUI = {
-            button: new @context.Button custom_theme
-            slider: new @context.Slider custom_theme
-            switch: new @context.Switch custom_theme
-            textInput: new @context.TextInput custom_theme
-            vector: new @context.Vector custom_theme
-            selector: new @context.Selector custom_theme
-            splitter: new @context.Splitter custom_theme
-        }
-
         pum_manager = @
-        theme = @context.theme
+        myoui = @myoui
+        @PopupMenu = PopupMenu = class PopupMenu extends React.Component
+            @defaultProps:
+                children: []
+                top: '0px'
+                left: '0px'
 
-        @popup_menu = popup_menu = Component
+            constructor: (props={})->
+                super props
+                theme = @theme = {myoui.theme..., props.theme...}
 
             # Setting pum position and correcting it if overfows the window.
             componentDidMount: ->
-                element = ReactDOM.findDOMNode(@)
+                {props} = @
+                element = ReactDOM.findDOMNode @
                 # launched as a sub pum
-                if @props.parent_element?
-                    rect = @props.parent_element.getClientRects()[0]
+                if props.parent_element?
+                    rect = props.parent_element.getClientRects()[0]
                     original_width = element.offsetWidth
-                    element.style.top = "calc(#{rect.top}px + #{@props.left})"
-                    element.style.left = "calc(#{rect.left + rect.width - 2}px + #{@props.top})"
+                    element.style.top = "calc(#{rect.top}px + #{props.left})"
+                    element.style.left = "calc(#{rect.left + rect.width - 2}px + #{props.top})"
 
                     # calculating overflow
                     {top, left, width, height,
@@ -54,8 +53,8 @@ class PopupMenuManager # pumm
                             element.style.left = left - left_overflow + 'px'
 
                 else
-                    element.style.top = @props.top
-                    element.style.left = @props.left
+                    element.style.top = props.top
+                    element.style.left = props.left
 
                     # calculating overflow
                     {top, left, top_overflow,
@@ -67,66 +66,62 @@ class PopupMenuManager # pumm
                 # correcting vertical position
                 element.style.top = top - top_overflow + 'px'
 
-            getDefaultProps: ->
-                children: []
-                top: '0px'
-                left: '0px'
-
             render: ->
-                custom_theme = @props.custom_theme or custom_theme
-                div
+                {props, theme} = @
+
+                # This component is a css triangle, to be added in the items with sub-pum
+                triangle = e 'div',
+                    style:
+                        width: 10
+                        height: 10
+                    e 'div',
+                        style:
+                            borderTop: 'solid transparent 5px'
+                            borderBottom: 'solid transparent 5px'
+                            borderLeft: "solid #{theme.colors.dark} 5px"
+                            width: 0
+                            height:0
+
+                e 'div',
                     className: 'myoui popup_menu'
-                    key: @props.id
+                    key: props.id
                     onMouseUp: (event)-> event.stopPropagation()
-                    style: [
-                        mixins.columnFlex
+                    style: {
+                        mixins.columnFlex...
                         alignItems: 'flex-start'
                         position: 'absolute'
                         top: 0
                         left: 0
                         overflow: 'hidden'
-                        theme.popupMenu @props.enabled
-                        custom_theme.popupMenu? @props.enabled
+                        theme.popupMenu(props.enabled)...
+                    }
 
-                    ]
-
-                    for item in @props.menu
+                    for item in props.menu
                         do (item)=>
                             # the default onMouseOver closes all the sub-pums
                             item.onMouseOver = =>
-                                @props.pum_manager._close_all_pums_of(@props)
-                                @props.pum_manager.update()
+                                props.pum_manager._close_all_pums_of(props)
+                                props.pum_manager.update()
 
                             if item.pum
                                 # close all the sub pums and after open this sub-pum
                                 item.onMouseOver = (event)=>
                                     element = event.currentTarget
                                     item.pum.parent_element = element
-                                    @props.pum_manager._close_all_pums_of(@props)
+                                    props.pum_manager._close_all_pums_of(props)
                                     item.pum.enable()
-
-                                # This component is a css triangle, to be added in the items with sub-pum
-                                triangle = div
-                                        style:
-                                            width: 10
-                                            height: 10
-                                        div
-                                            style:
-                                                borderTop: 'solid transparent 5px'
-                                                borderBottom: 'solid transparent 5px'
-                                                borderLeft: "solid #{theme.colors.dark} 5px"
-                                                width: 0
-                                                height:0
-                                UI = item.UI or 'button'
-                                basicUI[UI].ui item, triangle
+                                UI = item.UI or 'Button'
+                                e myoui[UI], item, triangle
                             else
-                                UI = item.UI or 'button'
-                                basicUI[UI].ui item
-        @ui = Component
+                                UI = item.UI or 'Button'
+                                e myoui[UI], item
+
+        class Component extends React.Component
             componentDidMount: ->
                 pum_manager.update = @forceUpdate.bind @
             render: ->
-                div
+                {pums, active, zIndex} = pum_manager
+                e 'div',
                     className: 'myoui popup_menu_manager'
 
                     onMouseUp: (event) ->
@@ -143,7 +138,7 @@ class PopupMenuManager # pumm
                             event.stopPropagation()
                         pum_manager.update()
 
-                    style:[
+                    style:
                         position: 'fixed'
                         top: '0px'
                         left: '0px'
@@ -151,16 +146,15 @@ class PopupMenuManager # pumm
                         height: '100vh'
                         display: if active.length then 'block' else 'none'
                         zIndex: zIndex
-                    ]
 
                     for key in active
                         pum = pums[key]
-
                         pum.key = pum.id = key
                         pum.pum_manager = pum_manager
+                        e PopupMenu, pum
 
-                        popup_menu pum
 
+        @reactElement = e Component
     register: (key, pum)->
         pum.id = key
 
@@ -177,7 +171,12 @@ class PopupMenuManager # pumm
         # registering sub pums
         for item in pum.menu
             item.key = item.id = key + '.item_' + pum.menu.indexOf item
-            item.useHighlight = true
+            item.useHighlight =
+                if item.useHighlight?
+                    item.useHighlight
+                else
+                    @useHighlight
+
             if item.menu?.length
                 pum_key = item.key + '.pum'
                 sub_pum = {
@@ -190,28 +189,28 @@ class PopupMenuManager # pumm
                 @register pum_key, sub_pum
                 item.pum = sub_pum
 
-        @_pums[key] = pum
+        @pums[key] = pum
         return pum
 
     unregister: (key)->
         @disable key
-        delete @_pums[key]
+        delete @pums[key]
 
     enable: (key)=>
         @disable key
-        @_pums[key].enabled = true
-        @_active.push key
+        @pums[key].enabled = true
+        @active.push key
 
     disable: (key)=>
-        pum = @_pums[key]
-        if key in @_active
+        pum = @pums[key]
+        if key in @active
             @_close_all_pums_of pum
             pum.enabled = false
 
             #remove
-            i = @_active.indexOf key
+            i = @active.indexOf key
             if i!= -1
-                @_active.splice i, 1
+                @active.splice i, 1
 
     # close all sub pums of a pum
     _close_all_pums_of: (pum)=>
@@ -236,6 +235,4 @@ get_screen_overflow = (element)->
 
     return {top, left, width, height, top_overflow, left_overflow}
 
-
-
-module.exports = {PopupMenuManager}
+module.exports = PopupMenuManager

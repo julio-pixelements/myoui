@@ -46,7 +46,7 @@ var config = {
     plugins: [
         new webpack.BannerPlugin({banner:license, raw:false}),
         new webpack.BannerPlugin({banner:'"use strict";', raw:true}),
-        new webpack.IgnorePlugin(/^(fs|stylus|path|coffee-script)$/),
+        new webpack.IgnorePlugin(/^(fs|stylus|path|coffeescript)$/),
     ],
     resolve: {
         extensions: [".webpack.js", ".web.js", ".js", ".coffee", ".json"],

@@ -1,105 +1,114 @@
-{ React, Component, mixins } = require '../common.coffee'
-{ div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
-pre, iframe, br, audio, form, input, label, button, datalist,
-option, optgroup, svg, defs, linearGradient, stop, video, select, option} = React.DOM
+{ React, mixins } = require '../common.coffee'
+e = React.createElement
+Icon = require './icon.coffee'
+Select = require('react-select').default
 
-icon_component = require './icon.coffee'
-Radium = require 'radium'
-Select = React.createFactory Radium require 'react-select'
+class Selector extends React.Component
+    constructor: (@myoui, props={})->
+        super props
+        theme = @theme = {@myoui.theme..., @theme..., props.theme...}
 
-class Selector
-    constructor: (@context, custom_theme={})->
-        theme = @context.theme
-        @ui = Component
-            getDefaultProps: ->
-                labelStyle: []
+        @state = mouseover: false
+        onMouseOver = (e)=>
+            if not @state.mouseover
+                @setState 'mouseover': true
 
-            componentWillUpdate: ()->
-                @state.value = @props.read?()
+        onMouseOut = (e)=>
+            if @state.mouseover
+                @setState 'mouseover': false
 
-            componentWillMount: ->
-                 @setState {value: @props.read()}
+        @ui_props =  {
+            key: @props.id
+            className: 'myoui selector_container'
+            onMouseOver: onMouseOver
+            onMouseOut: onMouseOut
+            style: {
+                # required style
+                mixins.rowFlex...
+                alignItems: 'center'
+                justifyContent: if @props.icon and @props.label then 'space-between' else 'center'
+                width: '100%'
+                userSelect: 'none'
+                # cursor: 'pointer'
+                theme.UIElement...
+                theme.button...
+            }
+        }
 
-            render: ->
-                custom_theme = @props.custom_theme or custom_theme
-                label = icon = null
-                if @props.label
-                    label = div
-                        key: @props.id + '.label'
-                        className: 'myoui label'
-                        style: [
-                            theme.label()
-                            custom_theme.label?()
-                        ]
-                        @props.label
+        # Adding events
+        for k,v of props when /^on[A-Z]/.test(k) and k!='onChange'
+            if k == 'onMouseOver'
+                @ui_props[k] = (e)=>
+                    onMouseOver(e)
+                    v(e)
+            else if k == 'onMouseOut'
+                @ui_props[k] = (e)=>
+                    onMouseOut(e)
+                    v(e)
+            else
+                @ui_props[k] = v
 
-                icon = @props.icon
-                #if icon is an url the component will be created here
-                if typeof(icon) == 'string'
-                    icon = icon_component
-                        src: icon
-                        key: @props.id + '.icon'
-                        style:[
-                            theme.icon
-                            custom_theme.icon
-                        ]
+        @selectorProps = selectorProps = @props.config
+        selectorProps.options = @props.options
+        #TODO Modify react-select to support Radium styling
+        selectorProps.style = theme.selector
 
-                selectorProps = @props.config
-                selectorProps.options = @props.options
-                selectorProps.value = @state.value
-                #TODO Modify react-select to support Radium styling
-                selectorProps.style = [
-                    theme.selector
-                    custom_theme.selector
-                ]
+        selectorProps.onChange = (item) =>
+            @setState {value: item}
+            @props.onChange? item
 
-                selectorProps.onChange = (item) =>
-                    @setState {value: item}
-                    @props.onChange? item
+        selectorProps.name = @props.id
 
-                selectorProps.name = @props.id
+    componentWillUpdate: ()->
+        @state.value = @props.read?()
 
-                selector = Select selectorProps
+    componentWillMount: ->
+         @setState {value: @props.read()}
 
-                label_and_selector = div
-                    key: @props.id + '.label_and_input'
-                    style:[
-                        width: '100%'
-                        mixins.columnFlex
-                        alignItems: if @props.flip then 'right' else 'left'
-                    ]
-                    label, selector
+    render: ->
+        {theme, state, props} = @
+        label = icon = null
+        if props.label
+            label = e 'div',
+                key: props.id + '.label'
+                className: 'myoui label'
+                style: theme.label()
+                props.label
 
-                props_ui =  {
-                    key: @props.id
-                    className: 'myoui selector_container'
-                    style:[
-                        # required style
-                        mixins.rowFlex
-                        alignItems: 'center'
-                        justifyContent: if icon and label then 'space-between' else 'center'
-                        width: '100%'
-                        userSelect: 'none'
-                        # cursor: 'pointer'
-                        theme.UIElement
-                        theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
-                        theme.button
-                        custom_theme.UIElement
-                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight, @props.forceHighlight
-                        custom_theme.button
-                        ]
-                    }
+        icon = props.icon
+        #if icon is an url the component will be created here
+        if typeof(icon) == 'string'
+            icon = e Icon,
+                src: icon
+                key: props.id + '.icon'
+                style: theme.icon
 
-                # Adding events
-                for k,v of @props when /^on[A-Z]/.test(k) and k!='onChange'
-                    props_ui[k] = v
+        selector = e Select, {@selectorProps..., value: state.value}
 
-                if @props.flip
-                    div props_ui, [label_and_selector, icon].concat @props.children
-                else
-                    div props_ui, [icon, label_and_selector].concat @props.children
+        label_and_selector = e 'div',
+            key: props.id + '.label_and_input'
+            style: {
+                mixins.columnFlex...
+                width: '100%'
+                alignItems: if props.flip then 'right' else 'left'
+            }
+            label, selector
 
-module.exports = {Selector}
+        highlighted = (@props.useHighlight and @state.mouseover) or @props.forceHighlight
+        ui_props = {
+            @ui_props...,
+            style: {
+                @ui_props.style...
+                theme.UIElementContainer(@props.disabled, highlighted)...
+                }
+            }
+
+        if props.flip
+            e 'div', ui_props, [label_and_selector, icon].concat props.children
+        else
+            e 'div', ui_props, [icon, label_and_selector].concat props.children
+
+module.exports = Selector
 
 ###
 visual scheme:

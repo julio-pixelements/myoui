@@ -1,129 +1,143 @@
-{ React, Component, mixins } = require '../common.coffee'
-{ div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
-pre, iframe, br, audio, form, input, label, button, datalist,
-option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
+{ React, mixins } = require '../common.coffee'
+e = React.createElement
 
 icon_component = require './icon'
 
-class TextInput
-    constructor: (@context, custom_theme={}) ->
-        theme = @context.theme
-        @ui = Component
-            getDefaultProps: ->
-                labelStyle: []
+class TextInput extends React.Component
+    theme: {}
+    constructor: (@myoui, props={}) ->
+        super props
+        @state =
+            value: ''
+            editing: false
+            mouseover: false
 
-            componentWillUpdate: ->
-                if not @state.editing
-                    @state.value = @props.read?()
+        onMouseOver = (e)=>
+            if not @state.mouseover
+                @setState 'mouseover': true
 
-            getInitialState: ->
-                value: ''
-                editing: false
+        onMouseOut = (e)=>
+            if @state.mouseover
+                @setState 'mouseover': false
 
-            componentWillMount: ->
-                @setState {value: @props.read()}
+        theme = @theme = {@myoui.theme..., @theme..., props.theme...}
 
-            render: ->
-                custom_theme = @props.custom_theme or custom_theme
-                label = icon = null
-                if @props.label
-                    label = div
-                        key: @props.id + '.label'
-                        className: 'label'
-                        style: [
-                            theme.label()
-                            custom_theme.label()
-                            @props.labelStyle
-                            pointerEvents: 'none'
-                        ]
-                        @props.label
+        @ui_props = ui_props =  {
+            title: @props.title
+            key: @props.id
+            className: 'myoui text_input_container'
+            style: {
+                onMouseOver: onMouseOver
+                onMouseOut: onMouseOut
+                mixins.rowFlex...
+                alignItems: 'center'
+                width: '100%'
+                userSelect: 'none'
+                theme.UIElement...
+                theme.button...
+                maxWidth: '100%'
+                justifyContent: ((@props.icon and @props.label) and 'space-between') or 'center'
+            }
+        }
 
-                icon = @props.icon
-                #if icon is an url the component will be created here
-                if typeof(icon) == 'string'
-                    icon = icon_component
-                        src: icon
-                        key: @props.id + '.icon'
-                        style:[theme.icon, custom_theme.icon, @props.iconStyle]
+        # Adding events
+        for k,v of @props when /^on[A-Z]/.test(k) and k!='onChange'
+            ui_props[k] = v
 
-                text_input = input
-                    autoFocus: @props.autoFocus
-                    onFocus: (event)->
-                        event.target.select()
+    componentWillUpdate: ->
+        if not @state.editing
+            @state.value = @props.read?()
 
-                    key: @props.id + '.input'
-                    className: 'text_input'
-                    style: [
-                        theme.label()
-                        theme.textInput
-                        custom_theme.label()
-                        custom_theme.textInput
-                        margin: '0px 0px 0px 10px'
-                    ]
-                    value: @state.value
+    componentWillMount: ->
+        @setState {value: @props.read()}
 
-                    onChange: (event) =>
-                        v = event.target.value
-                        wrong_input = @props.validate?(v)
-                        if not wrong_input
-                            @props.onChange?(v)
-                        @setState {value:v, wrongInput:wrong_input, editing:true}
+    render: ->
+        theme = @theme
 
-                    # dimiss
-                    onBlur: (event) =>
-                        @setState {value: @props.read(), editing:false}
+        label = @props.label
 
-                    onKeyDown: (event)=>
-                        v = event.target.value
-                        if event.keyCode == 13 # ENTER (submit)
-                            if @state.wrongInput
-                                return
-                            # write value
-                            @props.onSubmit?(v)
-                            @setState {editing:false}
-                            event.target.blur()
+        if @props.label
+            label = e 'div',
+                key: @props.id + '.label'
+                className: 'label'
+                style: {
+                    pointerEvents: 'none'
+                    theme.textInput.label...
+                }
+                @props.label
 
-                        else if event.keyCode == 27 # ESC (dimiss)
-                            event.target.blur()
-                            @setState {value: @props.read(), editing:false}
+        #if icon is an url the component will be created here
+        icon = @props.icon
+        if typeof(icon) == 'string'
+            icon = icon_component
+                src: icon
+                key: @props.id + '.icon'
+                style: theme.icon
 
-                element_body = div
-                    key: @props.id + '.element_body'
-                    className: 'element_body'
-                    style:[
-                        width: '100%'
-                        mixins.columnFlex
-                        alignItems: if @props.flip then 'right' else 'left'
-                    ]
-                    label, text_input
+        text_input = e 'input',
+            autoFocus: @props.autoFocus
+            onFocus: (event)->
+                event.target.select()
 
-                props_ui =  {
-                    title: @props.title
-                    key: @props.id
-                    className: 'myoui text_input_container'
-                    style:[
-                        mixins.rowFlex
-                        alignItems: 'center'
-                        justifyContent: if icon and label then 'space-between' else 'center'
-                        width: '100%'
-                        userSelect: 'none'
-                        theme.UIElement
-                        theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
-                        theme.button
-                        custom_theme.button
-                        ]
-                    }
+            key: @props.id + '.input'
+            className: 'text_input'
+            style: {
+                margin: '0px 0px 0px 10px'
+                theme.textInput.input...
+            }
+            value: @state.value
 
-                # Adding events
-                for k,v of @props when /^on[A-Z]/.test(k) and k!='onChange'
-                    props_ui[k] = v
+            onChange: (event) =>
+                v = event.target.value
+                wrong_input = @props.validate?(v)
+                if not wrong_input
+                    @props.onChange?(v)
+                @setState {value:v, wrongInput:wrong_input, editing:true}
 
-                if @props.flip
-                    div props_ui, [element_body, icon].concat @props.children
-                else
-                    div props_ui, [icon, element_body].concat @props.children
+            # dimiss
+            onBlur: (event) =>
+                @setState {value: @props.read(), editing:false}
 
-module.exports = {TextInput}
+            onKeyDown: (event)=>
+                v = event.target.value
+                if event.keyCode == 13 # ENTER (submit)
+                    if @state.wrongInput
+                        return
+                    # write value
+                    @props.onSubmit?(v)
+                    @setState {editing:false}
+                    event.target.blur()
+
+                else if event.keyCode == 27 # ESC (dimiss)
+                    event.target.blur()
+                    @setState {value: @props.read(), editing:false}
+
+        element_body = e 'div',
+            key: @props.id + '.element_body'
+            className: 'element_body'
+            style: {
+                mixins.columnFlex...
+                width: '100%'
+                alignItems: if @props.flip then 'right' else 'left'
+            }
+            label, text_input
+
+        highlighted = (@props.useHighlight and @state.mouseover) or @props.forceHighlight
+
+        ui_props = {
+            @ui_props...,
+            style: {
+                @ui_props.style...
+                theme.UIElementContainer(@props.disabled, highlighted)...
+                }
+            }
+
+        if @props.flip
+            e 'div', ui_props, [element_body, icon].concat @props.children
+        else
+            e 'div', ui_props, [icon, element_body].concat @props.children
+
+module.exports = TextInput
 ###
 visual scheme:
 

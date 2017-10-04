@@ -1,77 +1,99 @@
-{ React, Component, mixins} = require '../common.coffee'
-{ div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
-pre, iframe, br, audio, form, input, label, button, datalist,
-option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
+{ React, mixins } = require '../common.coffee'
+e = React.createElement
 
-icon_component = require './icon.coffee'
+Icon = require './icon.coffee'
 
-class Button
-    constructor: (@context, custom_theme={})->
-        theme = @context.theme
-        self = @ # to be used in the component
-        @ui = Component
-            getDefaultProps: ->
-                useHighlight: false
+class Button extends React.Component
+    @defaultProps:
+        useHighlight: false
 
-            render: ->
-                custom_theme = @props.custom_theme or custom_theme
-                #if label is an string the component will be created here
-                label = @props.label
-                if typeof(label) == 'string'
-                    label = div
-                        key: @props.id + '.label'
-                        className: 'label'
-                        style: [theme.label(), custom_theme.label?()]
-                        @props.label
+    theme: {}
+    constructor: (@myoui, props={})->
+        super props
+        theme = @theme = {@myoui.theme..., @theme..., props.theme...}
+        #if label is an string the component will be created here
 
-                #if icon is an url the component will be created here
-                icon = @props.icon
-                if typeof(icon) == 'string'
-                    icon = icon_component
-                        src: icon
-                        key: @props.id + '.icon'
-                        style:[theme.icon, custom_theme.icon]
+        @state = mouseover: false
+        onMouseOver = (e)=>
+            if not @state.mouseover
+                @setState 'mouseover': true
 
-                # ui_props
-                ui_props = {}
+        onMouseOut = (e)=>
+            if @state.mouseover
+                @setState 'mouseover': false
 
-                ui_props.title = @props.title
-                ui_props.key = null
-                ui_props.className = 'myoui simple_button'
-                ui_props.style = [
-                    mixins.rowFlex
-                    alignItems: 'center'
-                    justifyContent:
-                        if icon and label
-                            if @props.flip
-                                'flex-end'
-                            else
-                                'flex-start'
+        @ui_props =
+            title: props.title
+            key: null
+            className: 'myoui simple_button'
+            onMouseOver: onMouseOver
+            onMouseOut: onMouseOut
+            style: {
+                mixins.rowFlex...
+                alignItems: 'center'
+                width: '100%'
+                userSelect: 'none'
+                cursor: 'pointer'
+                justifyContent:
+                    if props.icon and props.label
+                        if props.flip
+                            'flex-end'
                         else
-                            'center'
-                    width: '100%'
-                    userSelect: 'none'
-                    cursor: 'pointer'
-                    theme.UIElement
-                    custom_theme.UIElement
-                    theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
-                    custom_theme.UIElementContainer? @props.disabled, @props.useHighlight, @props.forceHighlight
-                    theme.button
-                    custom_theme.button
-                    ]
-
-                # Adding events
-                for k,v of @props when /^on[A-Z]/.test k
-                    ui_props[k] = v
-
-                if @props.flip
-                    div ui_props, label, icon, @props.children
-                else
-                    div ui_props, icon, label, @props.children
+                            'flex-start'
+                    else
+                        'center'
+                theme.UIElement...
+                theme.button...
+            }
 
 
+        # Adding events
+        for k,v of @props when /^on[A-Z]/.test k
+            if k == 'onMouseOver'
+                @ui_props[k] = do(v)=>(e)=>
+                    onMouseOver(e)
+                    v(e)
+            else if k == 'onMouseOut'
+                @ui_props[k] = do(v)=>(e)=>
+                    onMouseOut(e)
+                    v(e)
+            else
+                @ui_props[k] = v
 
-module.exports = {Button}
+    render: ->
+        theme = @theme
+        label = @props.label
+        if typeof(label) == 'string'
+            label = e 'div',
+                key: @props.id + '.label'
+                className: 'label'
+                style: theme.label()
+                @props.label
+
+        #if icon is an url the component will be created here
+        icon = @props.icon
+
+        if typeof(icon) == 'string'
+            icon = e Icon
+                src: icon
+                key: @props.id + '.icon'
+                style: theme.icon
+
+        highlighted = (@props.useHighlight and @state.mouseover) or @props.forceHighlight
+        ui_props = {
+            @ui_props...,
+            style: {
+                @ui_props.style...
+                theme.UIElementContainer(@props.disabled, highlighted)...
+                }
+            }
+
+        if @props.flip
+            e 'div', ui_props, label, icon, @props.children
+        else
+            e 'div', ui_props, icon, label, @props.children
+
+module.exports = Button
 ###
 Visual scheme:
 [ label ]

@@ -79,40 +79,33 @@ class Theme
 
         # UI elements:
 
-        @UIElement = [
+        @UIElement = {
+            fontStyles.p...
             minHeight: 44
             paddingBottom: spacing
             paddingTop: spacing
             paddingLeft: spacing
             paddingRight: spacing
             color: colors.t1
-            fontStyles.p
             textShadow: shadows.textWhite
             background: 'transparent'
-        ]
+        }
 
-        @UIElementContainer = (disabled, useHighlight, forceHighlight)-> [
-            if useHighlight
-                ':hover': [
+        @UIElementContainer = (disabled, highlighted)-> {
+                (if highlighted and not disabled
                     boxShadow: shadows.smallSoft
                     background: 'white'
                     color: 'black' # it's not working
-                    ]
-            if forceHighlight
-                [
-                    boxShadow: shadows.smallSoft
-                    background: 'white'
-                    color: 'black' # it's not working
-                ]
-            mixins.transition '250ms', 'background shadow width'
-            if disabled
-                opacity: 0.5
-                pointerEvents: 'none'
-            else
-                opacity: 1
-                pointerEvents:'all'
-        ]
-
+                )...
+                mixins.transition('250ms', 'background shadow width')...
+                (if disabled
+                    opacity: 0.5
+                    pointerEvents: 'none'
+                else
+                    opacity: 1
+                    pointerEvents:'all'
+                )...
+            }
         @icon =
             margin: "#{-spacing}px #{spacing/2}px #{-spacing}px #{-spacing/2}px"
 
@@ -123,15 +116,21 @@ class Theme
             textAlign: textAlign
 
 
-        @textInput = [
-            color: colors.t1
-            fontStyles.p
-            borderRadius: radius.r1
-            background: mixins.chroma(colors.light).darken(0.2)
-            borderLeft: 'none' # to disable default style
-            mixins.border3d 0.1, '1px', true
-            outline: 'none'
-        ]
+        @textInput =
+            label: @label('100%', 'left')
+            input: {
+                @label('100%', 'left')...
+                fontStyles.p...
+                mixins.border3d(0.1, '1px', true)...
+                color: colors.t1
+                borderRadius: radius.r1
+                background: mixins.chroma(colors.light).darken(0.2)
+                borderLeft: 'none' # to disable default style
+                outline: 'none'
+                maxWidth: '100%'
+                textAlign: 'left'
+                paddingLeft: '8px'
+            }
 
         @button = {}
 
@@ -140,54 +139,59 @@ class Theme
                 barColor: (f=0) ->
                     mixins.colorInterpolation(colors.red, colors.green, f)
             slider: null
-            value: [
+            value: {
+                mixins.rowFlex...
                 width: 70
                 height: 24
-                mixins.rowFlex
-                @textInput
-            ]
+                @textInput.input...
+                textAlign: 'center'
+            }
+
             label:{maxWidth: 100}
 
-            bar: (color, allowTransitions, flip)-> [
+            bar: (color, allowTransitions, flip)-> {
+                mixins.border3d(0.1, '1px')...
+                (if allowTransitions then mixins.transition '0.1s', 'width')...
                 mixBlendMode: 'multiply'
                 height: "100%"
                 minWidth: "4px"
                 background: color
                 borderRadius: if flip then "#{radius.r2}px 0 0 #{radius.r2}px" else "0 #{radius.r2}px #{radius.r2}px 0"
                 boxShadow: shadows.smallSoft
-                mixins.border3d 0.1, '1px'
-                if allowTransitions then mixins.transition '0.1s', 'width'
                 transformOrigin: "left"
                 # animation 'unhide_zoom', '0.5s'
-                ]
+            }
+
 
         @switch =
             props:
+                switchColor: (f)->
+                    mixins.colorInterpolation(colors.red, colors.green, f)
                 radius: 12 # border radius
                 buttonWidth: 24 # button width
                 containerBaseWidth: 24 # base width of the widget (without the extremes)
                 borderWidth: 1 # size of the 3d border
                 containerHeight: 24 # height of the widget
-                switchColor: (f)->
-                    mixins.colorInterpolation(colors.red, colors.green, f)
-            container: (borderWidth)-> [
+
+            container: (borderWidth)-> {
+                mixins.border3d(0.1, "#{borderWidth}px", true)...
                 background: mixins.chroma(colors.light).darken(0.2)
-                mixins.border3d 0.1, "#{borderWidth}px", true
-                ]
-            base: (borderWidth, switchColor)-> [
+            }
+
+            base: (borderWidth, switchColor)-> {
+                mixins.border3d(0.2, "#{borderWidth}px")...
+                mixins.transition('0.25s', 'width color')...
                 background: switchColor
-                mixins.border3d 0.2, "#{borderWidth}px"
                 boxShadow: shadows.small
-                mixins.transition '0.25s', 'width color'
-                ]
-            button: (borderWidth)-> [
+            }
+            button: (borderWidth)-> {
+                mixins.border3d(0.2, "#{borderWidth}px")...
+                mixins.transition('0.25s', 'transform')...
                 background: colors.light
-                mixins.border3d 0.2, "#{borderWidth}px"
                 boxShadow: shadows.small
                 transform: "scale(0.8)"
-                mixins.transition '0.25s', 'transform'
                 # animation 'unhide_zoom', '1s'
-            ]
+            }
 
         @vector = {
             elementsContainer: (vertical, hasLabel) ->
@@ -214,51 +218,58 @@ class Theme
                     paddingRight: 5
                     paddingBottom: 0
                     paddingLeft: 5
-                input: (vertical, vectorLength) -> [
-                    if not vertical then width: Math.min(300/vectorLength, 50)
+
+                input: (vertical, vectorLength) ->{
+                    (if not vertical then width: Math.min(300/vectorLength, 50))...
                     fontSize: 12
                     height: 20
-                    ]
+                }
+
                 label:
                     margin: '0px 5px 0px 0px'
                     fontSize: 12
                     height: 16
-                container: (vertical) ->
-                    minWidth: 0
-                    minHeight: 0
-                    if not vertical
+
+                container: (vertical) -> {
+                    (if not vertical
                         width: 'auto'
                         margin: '0px 5px 0px 0px'
+                    )...
+                    minWidth: 0
+                    minHeight: 0
+                }
                 bar: (vertical) ->
                     if not vertical then borderRadius: radius.r1
         }
 
-        @selector = [
+        @selector = {
+            fontStyles.p...
+            mixins.border3d(0.1, "1px", true)...
             color: colors.t1
-            fontStyles.p
-            background: mixins.chroma(colors.light).darken(0.2),
-            mixins.border3d 0.1, "1px", true
-        ]
-
-        @splitter = {
-            style:[
-                mixins.border3d 0.3, "1px", true
-                width: 'calc(100% - 20px)'
-            ]
-            title:[
-                color: mixins.chroma(colors.dark).brighten(0.1)
-                pointerEvents: 'none'
-                fontStyles.titleLightXS
-            ]
+            background: mixins.chroma(colors.light).darken(0.2)
         }
 
-        @popupMenu = (enabled) -> [
+        @splitter = {
+            style:{
+                mixins.border3d(0.3, "1px", true)...
+                width: 'calc(100% - 20px)'
+            }
+
+            title: {
+                fontStyles.titleLightXS...
+                color: mixins.chroma(colors.dark).brighten(0.1)
+                pointerEvents: 'none'
+            }
+            container: {}
+
+        }
+
+        @popupMenu = (enabled) -> {
+            mixins.border3d(0.2, '1px')...
             boxShadow: shadows.soft
-            # if enabled then animation('unhide_zoom', '250ms') else animation('hide_zoom', '250ms')
             borderRadius: radius.r2
             background: colors.light
-            mixins.border3d 0.2, '1px'
             transformOrigin: "top left"
-        ]
+        }
 
 module.exports = Theme

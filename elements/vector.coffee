@@ -1,170 +1,162 @@
-{ React, Component, mixins } = require '../common.coffee'
-{ div, span, p, a, ul, li, img, h1, h2, h3, em, strong, canvas,
-pre, iframe, br, audio, form, input, label, button, datalist,
-option, optgroup, svg, defs, linearGradient, stop, video} = React.DOM
+{ React, mixins } = require '../common.coffee'
+e = React.createElement
 
-iconComponent = require './icon.coffee'
+Icon = require './icon.coffee'
 dimensionNames = 'xyzwvutsrqponmlkjihgfedcba'
 
-class Vector
-    constructor: (@context, custom_theme={}) ->
-        theme = @context.theme
-        slider = new @context.Slider
+class Vector extends React.Component
+    @defaultProps:
+        component_names: 'xyzw' # array or string
 
-        @ui = Component
-            componentWillMount: ->
-                vector = @props.vector
-                if vector.length > @props.vectorElements.length
-                    throw "Vector length (#{vector.length}) is bigger than vectorElements length (#{@props.vectorElements.length})"
+    theme: {}
 
-                # Each vector element is a slider.
-                # This will generate a list of slider components
-                vectorElements = for i in [0...vector.length] then do (i) =>
-                    # read/write functions could be predefined because
-                    # the vector property is not optional and we know what to read/write
-                    # read function
-                    if @props.read?
-                        read = => @props.read i
-                    else
-                        read = => @props.vector[i]
-                    # write functions
-                    definedOnChange = @props.onChange?
-                    definedOnSlideEnd = @props.onSlideEnd?
-                    if definedOnChange or definedOnSlideEnd
-                        if definedOnChange
-                            onChange = (v) => @props.onChange v,i
-                        if definedOnSlideEnd
-                            onSlideEnd = (v) =>  @props.onSlideEnd v,i
-                    else
-                        onChange = (v) =>
-                            @props.vector[i] = v
+    constructor: (@myoui, props={}) ->
+        super props
+        @state = mouseover: false
+        theme = @theme = {@myoui.theme..., @theme..., props.theme...}
 
-                    id = @props.vectorElements[i]
-                    # Creating slider component
-                    slider_props =
-                        label: id
-                        key: @props.id + '.elements.' + id
-                        read: read
-                        onChange: onChange
-                        onSlideEnd: onSlideEnd
-                        max: @props.max
-                        min: @props.min
-                        softMax: @props.softMax
-                        softMin: @props.softMin
-                        step: @props.step
-                        unit: @props.unit
-                        flip: @props.flip
-                        icon: @props.componentsIcons?[i]
-                        allowManualEdit: @props.allowManualEdit
-                        hideValue: @props.hideValue
-                        movementAccuracy: @props.movementAccuracy
-                        #TODO: make barColor customizable in each
-                        # vector element
-                        barColor: @props.barColor
-                        custom_theme:
-                            input: [
-                                theme.vector.element.input @props.vertical, vector.length
-                                custom_theme.vector? and custom_theme.vector.elemen.input @props.vertical, vector.length
-                                ]
-                            custom_themelabel: [
-                                theme.vector.element.label
-                                custom_theme.vector? and custom_theme.vector.element.label
-                                ]
-                            UIElementContainer: => [
-                                theme.vector.element.container @props.vertical
-                                custom_theme.vector and custom_theme.vector.element.container @props.vertical
-                                ]
-                            slider:
-                                bar: => [
-                                    theme.vector.element.bar @props.vertical
-                                    custom_theme.vector? and custom_theme.vector.elements.bar @props.vertical
-                                    ]
-                                style: [
-                                    theme.vector.element.style
-                                    custom_theme.vector? and custom_theme.vector.element.style
-                                    ]
+        #TODO: support vmath vectors
+        vector = @props.vector
+        if not (vector instanceof Array)
+            throw 'Property "vector" must be an array.'
+        if vector.length > @props.component_names.length
+            throw "Vector length (#{vector.length}) is bigger than component_names length (#{@props.component_names.length})"
 
-                    slider.ui slider_props
+        # Each vector element is a slider.
+        # This will generate a list of slider components
+        @vector_props = for i in [0...vector.length] then do (i) =>
+            # read/write functions could be predefined because
+            # the vector property is not optional and we know what to read/write
+            # read function
+            if @props.read?
+                read = => @props.read i
+            else
+                read = => @props.vector[i]
+            # write functions
+            definedOnChange = @props.onChange?
+            definedOnSlideEnd = @props.onSlideEnd?
+            if definedOnChange or definedOnSlideEnd
+                if definedOnChange
+                    onChange = (v) => @props.onChange v,i
+                if definedOnSlideEnd
+                    onSlideEnd = (v) =>  @props.onSlideEnd v,i
+            else
+                onChange = (v) =>
+                    @props.vector[i] = v
 
-                @setState {vectorElements}
-
-            getInitialState: ->
-                vectorElements: []
-
-            getDefaultProps: ->
-                vectorElements: 'xyzw' # array or string
-
-            render: ->
-                custom_theme = @props.custom_theme or custom_theme
-                label = icon = null
-                if @props.label
-                    label = div
-                        key: @props.id + '.label'
-                        className: 'label'
-                        style: [
-                            userSelect: 'none'
-                            theme.label theme.slider.label.maxWidth
-                            custom_theme.label? and custom_theme.label theme.slider.label.maxWidth
+            id = @props.component_names[i]
+            # Creating slider props
+            {
+                label: id
+                key: @props.id + '.elements.' + id
+                read: read
+                onChange: onChange
+                onSlideEnd: onSlideEnd
+                max: @props.max
+                min: @props.min
+                softMax: @props.softMax
+                softMin: @props.softMin
+                step: @props.step
+                unit: @props.unit
+                flip: @props.flip
+                icon: @props.componentsIcons?[i]
+                allowManualEdit: @props.allowManualEdit
+                hideValue: @props.hideValue
+                movementAccuracy: @props.movementAccuracy
+                #TODO: make barColor customizable in each
+                # vector element
+                barColor: @props.barColor
+                custom_theme:
+                    input: [
+                        theme.vector.element.input @props.vertical, vector.length
+                        ]
+                    custom_themelabel: [
+                        theme.vector.element.label
+                        ]
+                    UIElementContainer: => [
+                        theme.vector.element.container @props.vertical
+                        ]
+                    slider:
+                        bar: => [
+                            theme.vector.element.bar @props.vertical
                             ]
-                        @props.label
-
-                    icon = @props.icon
-                    #if icon is an url the component will be created here
-                    if typeof(icon) == 'string'
-                        icon = iconComponent
-                            src: icon
-                            key: @props.id + '.icon'
-                            style:[
-                                theme.icon
-                                custom_theme.icon? and custom_theme.icon
-                                ]
-
-                    headerProps =  {
-                        # Based on button
-                        key: @props.id + '.header'
-                        className: 'vectorHeader'
-                        style:[
-                            # required style
-                            mixins.rowFlex
-                            alignItems: 'center'
-                            justifyContent: if icon and label then 'flex-start' else 'center'
-                            width: '100%'
-                            userSelect: 'none'
-                            theme.UIElement
-                            # customizable style
-                            theme.button
-                            custom_theme.button
-                            ]
+                        style: {
+                            theme.vector.element.style...
                         }
-                    header = div(headerProps, icon, label)
+            }
 
-                elementsContainer = div
-                    className: 'vectorElementsContainer'
-                    key: @props.id + '.elements'
-                    style: [
-                        if @props.vertical then theme.columnFlex else mixins.rowFlex
-                        justifyContent: 'space-around'
-                        width: '100%'
-                        theme.vector.elementsContainer @props.vertical, @props.labels
-                        custom_theme.vector? and custom_theme.vector.elementsContainer @props.vertical, @props.labels
-                    ]
-                    # Based on sliders
-                    @state.vectorElements
+    render: ->
+        theme = @theme
+        label = icon = null
+        if @props.label
+            label = e 'div',
+                key: @props.id + '.label'
+                className: 'label'
+                style: {
+                    userSelect: 'none'
+                    (theme.label theme.slider.label.maxWidth)...
+                }
+                @props.label
 
-                div
-                    key: @props.id
-                    className: 'vector'
-                    style:[
-                        # required style
-                        mixins.columnFlex
-                        width: '100%'
-                        theme.UIElementContainer @props.disabled, @props.useHighlight, @props.forceHighlight
-                        custom_theme.UIElementContainer? @props.disabled, @props.useHighlight, @props.forceHighlight
-                    ]
-                    header
-                    elementsContainer
+            icon = @props.icon
+            #if icon is an url the component will be created here
+            if typeof(icon) == 'string'
+                icon = e Icon,
+                    src: icon
+                    key: @props.id + '.icon'
+                    style: theme.icon
 
-module.exports = {Vector}
+            headerProps =  {
+                # Based on button
+                key: @props.id + '.header'
+                className: 'vectorHeader'
+                style: {
+                    # required style
+                    mixins.rowFlex...
+                    alignItems: 'center'
+                    justifyContent: if icon and label then 'flex-start' else 'center'
+                    width: '100%'
+                    userSelect: 'none'
+                    theme.UIElement...
+                    # customizable style
+                    theme.button...
+                }
+            }
+            header = e 'div', headerProps, icon, label
+
+        elementsContainer = e 'div',
+            className: 'vectorElementsContainer'
+            key: @props.id + '.elements'
+            style: {
+                (if @props.vertical then theme.columnFlex else mixins.rowFlex)...
+                justifyContent: 'space-around'
+                width: '100%'
+                (theme.vector.elementsContainer @props.vertical, @props.labels)...
+            }
+            # Based on sliders
+            for p in @vector_props
+                e @myoui.Slider, p
+
+        highlighted = (@props.useHighlight and @state.mouseover) or @props.forceHighlight
+        e 'div',
+            key: @props.id
+            className: 'vector'
+            onMouseOver: (e)=>
+                if not @state.mouseover
+                    @setState 'mouseover': true
+            onMouseOut: (e)=>
+                if @state.mouseover
+                    @setState 'mouseover': false
+            style: {
+                # required style
+                mixins.columnFlex...
+                width: '100%'
+                (theme.UIElementContainer @props.disabled, highlighted)...
+            }
+            header
+            elementsContainer
+
+module.exports = Vector
 ###
 Example:
 # vector = [0,0,1]
