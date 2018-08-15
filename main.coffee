@@ -1,9 +1,9 @@
-{ React, ReactDOM, mixins } = require './common.coffee'
+{ React, ReactDOM, mixins, ReactResizeDetector } = require './common.coffee'
 
 Theme = require './styles/default_theme/default_theme.coffee'
 
 # utils
-react_utils = {React, ReactDOM}
+react_utils = {React, ReactDOM, ReactResizeDetector}
 css_utils = require './styles/css_utils.coffee'
 
 elements ={
