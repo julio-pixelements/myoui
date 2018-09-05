@@ -33,6 +33,9 @@ class Switch extends React.Component
     componentWillUpdate: ()->
         @state.state = @props.read?() % @props.states
 
+    componentWillMount: ()->
+        @state.state = @props.read?() % @props.states
+
     render: ->
         theme = @theme
         props = @switch_props
